@@ -2,12 +2,6 @@ Latent Reasoning — DataForge 2026
 
 An interactive educational explainer for recurrent latent reasoning.
 
-Artifact: https://latent-reasoning-pied.vercel.app/
-
-Source: https://github.com/anjanisingh9881-lab/latent-reasoning
-
-Author: Anjani Singh
-
 Track: DataForge 2026 — Explain the Frontier — Recurrence
 
 1. Core claim
