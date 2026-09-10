@@ -1,274 +1,224 @@
-Latent Reasoning — DataForge 2026
+# Latent Recurrent Reasoning — DataForge 2026
 
-An interactive educational explainer for recurrent latent reasoning.
+## 1. Project summary
 
-Track: DataForge 2026 — Explain the Frontier — Recurrence
+Theme: Explain the Frontier
+Approved concept: Recurrence / latent recurrent reasoning
+Artifact: Interactive educational web demo
+Repository: https://github.com/anjanisingh9881-lab/latent-reasoning
 
-1. Core claim
+## Core claim
 
-A recurrent model can perform additional computation by repeatedly updating a latent state, allowing inference-time computation to increase without generating a separate natural-language reasoning token at every intermediate step.
+Recurrence turns inference depth into a controllable compute variable: instead of expressing every intermediate step as a generated token, a model can repeatedly update an internal latent state before producing an answer. More recurrence can enable deeper computation, but additional recurrence is not guaranteed to improve an answer.
 
-The artifact makes this mechanism observable: the learner changes the recurrence depth and sees the resulting latent-state trajectory and toy-model output.
+This is the claim the artifact is designed to teach. The interactive model in this repository is an educational toy, not a reproduction of a published latent-reasoning model.
 
-Important scope: this is an educational toy model, not an implementation or reproduction of BDH-CQ.
+## 2. Intended learner
 
-2. Intended learner
-
-This artifact is intended for undergraduate students and early-career ML learners who understand basic neural-network concepts but have not yet studied recurrent latent reasoning.
+The artifact is aimed at learners who know basic machine learning and neural networks but have not studied recurrent latent reasoning.
 
 Prerequisites
 
-Basic neural-network terminology
+Basic Python or JavaScript familiarity
 
-Vectors or hidden states
+Basic neural-network concepts: vectors, activations, parameters
 
-Basic mathematical notation
+Familiarity with Transformers at a conceptual level
 
-Familiarity with the idea of a forward pass
+No prior knowledge of BDH or BDH-CQ required
 
-Transformer knowledge is helpful but not required.
+Learning objectives
 
-3. Learning objectives
+After using the artifact, a learner should be able to:
 
-After using the artifact, learners should be able to:
+Explain recurrence as repeated application of a computation to an evolving state.
 
-Explain what a latent state represents in recurrent computation.
+Distinguish token-level intermediate computation from latent-state intermediate computation.
 
-Describe h(t+1) = f(h(t), x) in plain language.
+Explain why recurrence depth can act as an inference-time compute budget.
 
-Explain how repeated computation creates an inference-time depth axis.
+Interpret a latent-state visualization as a numerical state trace, not as a readable hidden chain of thought.
 
-Distinguish latent recurrent computation from token-level intermediate reasoning.
+Describe the conceptual connection between recurrent latent reasoning and BDH-CQ.
 
-Observe how changing recurrence depth changes a state trajectory.
+Identify at least one failure mode: excessive recurrence can degrade performance.
 
-Explain why more recurrence does not automatically mean better reasoning.
+## 3. The interactive experiment
 
-Connect the toy mechanism to current recurrent-depth and latent-reasoning research.
+The learner selects a synthetic reasoning task and chooses a recurrence depth.
 
-Explain the BDH-CQ connection without confusing the toy model with the research system.
+The educational loop is conceptually:
 
-4. Interactive experiment
+initial state
+     │
+     ▼
+ recurrent update
+     │
+     ▼
+ recurrent update
+     │
+     ▼
+    ...
+     │
+     ▼
+ prediction
 
-The learner can:
+The current toy update is:
 
-Select a synthetic task:
+h_{t+1} = tanh(0.76 h_t + 0.31 x + 0.08 sin(t + i))
 
-Chain inference
+where h_t is the current state and x is the task's fixed input state. The implementation rescales the resulting values for visualization.
 
-Pattern reasoning
+The learner can change the number of recurrent steps, run the experiment, and inspect the resulting state trajectory and prediction.
 
-Parity reasoning
+Important honesty boundary
 
-Select the reasoning depth.
+The recurrence above is a teaching construction. Its numerical coefficients were selected for a small interactive demonstration. They are not claimed to be the equations of BDH-CQ or of another published research model.
 
-Run the experiment.
+Likewise, the toy confidence score is an educational heuristic rather than a calibrated probability.
 
-Inspect the latent-state bars.
-
-Compare the toy estimate with the known ground truth.
-
-Change the depth and run the experiment again.
-
-The tasks are deliberately small so that the computation is inspectable.
-
-5. Computational model
-
-The current educational computation uses a small deterministic recurrent update rather than a trained frontier model.
-
-For each state component:
-
-h(t+1,i) = tanh(0.76 h(t,i) + 0.31 x(i) + 0.08 sin(t+i))
-
-The coefficients are pedagogical. They are not claimed to reproduce BDH-CQ, its training procedure, architecture, or benchmark results.
-
-The conceptual structure is:
-
-input
-  ↓
-initial latent state
-  ↓
-recurrent update
-  ↓
-new latent state
-  ↓
-recurrent update
-  ↓
-...
-  ↓
-prediction
-
-6. What is live, synthetic, precomputed, and animated?
+## 4. What is live vs. synthetic
 
 Component
 
-Type
-
-Meaning
+Status
 
 Task examples
 
-Synthetic
+Synthetic, hand-authored
 
-Hand-authored educational tasks
+Recurrent computation
 
-Ground-truth answers
+Live in the educational frontend
 
-Precomputed
+Latent-state values
 
-Known answers for those tasks
+Computed live from the toy recurrence
 
-Initial states
+Prediction
 
-Synthetic
+Computed by the toy experiment
 
-Hand-authored numerical starting states
+Confidence
 
-Recurrent updates
+Heuristic teaching value
 
-Live
+Research claims
 
-Computed when the experiment runs
+Based on cited primary papers
 
-Reasoning depth
+BDH-CQ model
 
-Live learner input
-
-Controlled by the learner
-
-Latent-state bars
-
-Live visualization
-
-Derived from the current state
-
-Toy prediction
-
-Live/toy computation
-
-Produced by the educational model
-
-Research explanations
-
-Precomputed
-
-Based on cited papers
-
-UI transitions
-
-Animated
-
-Presentation only; not scientific evidence
+Not executed by this artifact
 
 External dataset
 
-None
-
-Current demo uses synthetic tasks
+None required
 
 Pretrained weights
 
 None required
 
-Current educational model is not pretrained
+Animation
 
-7. Architecture
+Used only where it represents the live toy computation
+
+## 5. Architecture
 
 Learner
    │
    ▼
-React/Vite frontend
+React / Vite interface
    │
    ▼
-Model adapter layer
-   │
+Model adapter
    ├── toy recurrent computation
-   └── API boundary for backend integration
+   └── API boundary for future backend computation
    │
    ▼
-latent states + prediction + score
+state trajectory + prediction + experiment result
 
-Major components
+Current major components:
 
-src/main.jsx — application and interactive experiment logic.
+src/main.jsx — current application and interactive experiment logic.
 
-src/styles.css — visual system and responsive layout.
+src/styles.css — interface styling and responsive layout.
 
 src/model/toyAdapter.js — educational recurrent computation.
 
-src/model/apiAdapter.js — API boundary for backend-based computation.
+src/model/apiAdapter.js — API boundary for a backend computation path.
 
 src/model/index.js — model abstraction/export layer.
 
-backend/ — backend scaffolding for the API-based computation path.
+backend/ — backend scaffolding for future API-based experiments.
 
-The deployed README should only describe the backend as live if the deployed frontend actually calls it. The current educational computation can operate through the toy model.
+The backend should only be described as live if the deployed frontend actually calls it. The educational demo can operate without the backend.
 
-8. Research connection
+## 6. Why recurrence matters
 
-Recurrent latent reasoning
+A conventional autoregressive reasoning system can spend more inference compute by generating additional tokens. Latent recurrent reasoning instead keeps an internal state and repeatedly applies computation to that state.
 
-Geiping et al. study a language-model architecture that scales test-time computation by iterating a recurrent block, increasing computation through recurrent depth rather than simply generating more reasoning tokens. [1]
+Geiping et al. (2025) study this design explicitly: a recurrent block can be unrolled to greater depth at test time, allowing inference computation to scale without requiring a longer textual chain of thought. Their proof-of-concept was scaled to 3.5B parameters and 800B training tokens and reported reasoning improvements with increased test-time computation. [1]
+
+This artifact isolates that architectural idea in a small, inspectable system.
+
+## 7. BDH and BDH-CQ connection
+
+BDH — Dragon Hatchling
+
+BDH is a post-Transformer architecture introduced in The Dragon Hatchling: The Missing Link between the Transformer and Models of the Brain (Kosowski et al., 2025). The paper describes a sparse, biologically inspired network of locally interacting neuron particles. It connects attention-like computation with an evolving graph of synaptic connections and emphasizes sparse, positive activations and state-level interpretability.
+
+A central BDH idea is that memory is not treated only as an external sequence of past tokens. Instead, information can modify an internal network state. The public paper also describes a GPU-friendly formulation and experiments across language and translation settings. [2]
 
 BDH-CQ
 
-Engdahl et al. introduce BDH-CQ, which combines in-context learning with recurrent latent reasoning. At inference time, inputs update recurrent memory and the model solves a query through iterative computation in latent space without verbalizing intermediate reasoning. [2]
+BDH-CQ: In-Context Learning with Recurrent Latent Reasoning (Engdahl et al., 2026) extends the BDH direction toward in-context reasoning. At inference time, presented inputs update recurrent memory; the query is then solved through iterative high-dimensional latent computation without verbalizing intermediate reasoning. [3]
 
-The connection to this artifact is conceptual:
+The conceptual mapping to this artifact is:
 
-Educational toy                 Research direction
-─────────────────               ─────────────────────
-task input                      inference-time input
-latent state                    recurrent memory
-repeated update                 iterative latent computation
-depth control                   recurrent computation
-toy output                      model output
+Educational artifact
 
-This project is not a reproduction of BDH-CQ.
+Research concept
 
-Current research is not unanimous
+Task input
 
-Knupp et al. study depth-recurrent attention mixtures and show that depth recurrence is an active architecture/scaling direction. [3]
+Inference-time input
 
-Kohli et al. study recurrent-depth Transformers and report gains in systematic generalization and depth extrapolation in controlled tasks, while also identifying overthinking, where excessive recurrence can degrade predictions. [4]
+Toy latent vector
 
-Lu et al. investigate whether latent chain-of-thought becomes interpretable in a depth-recurrent Transformer and report limited evidence for an interpretable latent CoT in their experiments. [5]
+Recurrent internal state
 
-Therefore, the artifact does not claim that a latent-state visualization is a readable hidden chain of thought.
+Repeated update
 
-9. Primary research sources
+Iterative latent computation
 
-[1] Geiping et al. (2025)
+User-controlled steps
 
-Scaling up Test-Time Compute with Latent Reasoning: A Recurrent Depth Approach
+Recurrent computation depth
 
-https://arxiv.org/abs/2502.05171
+Toy prediction
 
-[2] Engdahl et al. (2026)
+Model output
 
-BDH-CQ: In-Context Learning with Recurrent Latent Reasoning
+This is a conceptual mapping, not an implementation claim. This project does not reproduce BDH-CQ training, architecture, weights, or benchmark results.
 
-https://arxiv.org/abs/2608.09888
+The distinction matters because a visualization of numerical hidden-state dimensions is not automatically a visualization of semantic reasoning. Current research also does not establish that latent recurrence universally produces an interpretable hidden chain of thought.
 
-[3] Knupp et al. (2026)
+## 8. What current research says
 
-Depth-Recurrent Attention Mixtures: Giving Latent Reasoning the Attention it Deserves
+Three important directions are relevant:
 
-https://arxiv.org/abs/2601.21582
+Latent reasoning with recurrent depth. Geiping et al. (2025) show that recurrent depth can scale test-time computation without requiring textual chain-of-thought data. [1]
 
-[4] Kohli et al. (2026)
+Depth-recurrent architectures. Knupp et al. (2026) investigate depth-recurrent attention mixtures and report efficiency gains under matched comparisons. [4]
 
-Loop, Think, & Generalize: Implicit Reasoning in Recurrent-Depth Transformers
+Generalization and failure. Kohli et al. (2026) report that recurrent-depth Transformers can improve systematic generalization and depth extrapolation in controlled settings, while also identifying overthinking, where excessive recurrence degrades predictions. [5]
 
-https://arxiv.org/abs/2604.07822
+Lu et al. (2025) further investigate whether latent chain-of-thought in a depth-recurrent Transformer is interpretable and report limited evidence for an interpretable latent CoT in their experiments. [6]
 
-[5] Lu et al. (2025)
+Therefore, this project deliberately avoids saying that “the bars show the model's thoughts.” They show the numerical state produced by a simplified recurrent computation.
 
-Latent Chain-of-Thought? Decoding the Depth-Recurrent Transformer
-
-https://arxiv.org/abs/2507.02199
-
-10. Reproduction
+## 9. Reproduction
 
 Requirements
 
@@ -276,62 +226,73 @@ Node.js
 
 npm
 
-Modern browser
-
 Git
 
-Clone
-
-git clone https://github.com/anjanisingh9881-lab/latent-reasoning.git
-cd latent-reasoning
+Modern browser
 
 Install
 
+git clone https://github.com/anjanisingh9881-lab/latent-reasoning.git
+cd latent-reasoning
 npm install
 
-Run
+Development
 
 npm run dev
 
-Open the local Vite URL, normally:
+Open the local Vite URL shown by the terminal.
 
-http://localhost:5173/
-
-Build
+Production build
 
 npm run build
 
-Preview production build
+Preview
 
 npm run preview
 
-To reproduce the educational experiment, select a task, choose a depth, run it, inspect the state, then change the depth and run it again.
+To reproduce the educational experiment: select a task, choose a recurrence depth, run it, inspect the state, then change the depth and run it again.
 
-11. Limitations
+## 10. Limitations
 
 The recurrent model is a small educational toy.
 
-The tasks are synthetic and do not establish general reasoning ability.
+Synthetic tasks do not establish general reasoning ability.
 
-The latent bars are numerical state visualizations, not semantic explanations.
+Latent-state bars are numerical visualizations, not semantic explanations.
 
 Toy confidence is not calibrated probability.
 
-The project does not reproduce BDH-CQ architecture, training, weights, or benchmark evaluation.
+The project does not reproduce BDH-CQ.
 
-More recurrence is not guaranteed to improve performance; recent work reports overthinking/failure at excessive depth. [4]
+More recurrence is not guaranteed to improve performance.
 
-Evidence for interpretable latent chain-of-thought remains limited in current research. [5]
+Published research remains an active and contested area; evidence for interpretable latent chain-of-thought is limited.
 
-12. Code, data, assets, and licenses
+Results from controlled papers should not be generalized to all reasoning systems.
 
-Code
+## 11. Primary research
 
-Original project code is authored for this artifact by Anjani Singh. A project LICENSE file will specify the license for original code.
+[1] Jonas Geiping et al. (2025), Scaling up Test-Time Compute with Latent Reasoning: A Recurrent Depth Approach. https://arxiv.org/abs/2502.05171
+
+[2] Adrian Kosowski et al. (2025), The Dragon Hatchling: The Missing Link between the Transformer and Models of the Brain. https://arxiv.org/abs/2509.26507
+
+[3] Björn Engdahl et al. (2026), BDH-CQ: In-Context Learning with Recurrent Latent Reasoning. https://arxiv.org/abs/2608.09888
+
+[4] Jonas Knupp et al. (2026), Depth-Recurrent Attention Mixtures: Giving Latent Reasoning the Attention it Deserves. https://arxiv.org/abs/2601.21582
+
+[5] Harsh Kohli et al. (2026), Loop, Think, & Generalize: Implicit Reasoning in Recurrent-Depth Transformers. https://arxiv.org/abs/2604.07822
+
+[6] Wenquan Lu et al. (2025), Latent Chain-of-Thought? Decoding the Depth-Recurrent Transformer. https://arxiv.org/abs/2507.02199
+
+## 12. Source, data, and license disclosure
+
+Original code
+
+Original project code for this educational artifact is authored for the submission by Anjani Singh and is released under the MIT License in LICENSE.
 
 Data
 
-No external dataset is required for the current interactive toy. Tasks are synthetic and hand-authored.
+No external dataset is required by the current toy experiment. The reasoning tasks are synthetic and hand-authored.
 
 Model weights
 
@@ -339,65 +300,58 @@ No pretrained model weights are required.
 
 Graphics
 
-The current interface is rendered using HTML/CSS/React. No external image dataset is required.
+The interface uses HTML/CSS/React-rendered graphics. No external image dataset is required.
 
 Fonts
 
-The final submission will document the exact font source and license used by the deployed stylesheet.
+The final deployed font stack should be recorded in SOURCES_AND_LICENSES.md before submission if a web font is added.
 
-Third-party dependencies
+Dependencies
 
-JavaScript dependencies are declared in package.json. Their versions and licenses will be recorded in SOURCES_AND_LICENSES.md.
+Third-party dependencies retain their own licenses. They are not relicensed by this project.
 
-13. AI assistance disclosure
+See SOURCES_AND_LICENSES.md.
 
-Generative AI tools were used during development for project planning, programming assistance, debugging, deployment troubleshooting, documentation drafting, and research discovery.
+## 13. AI assistance disclosure
 
-The author is responsible for the final implementation, scientific framing, source selection, and claims. AI-generated text is not treated as a primary scientific source; technical claims are checked against primary research.
+AI tools were used during development for research assistance, drafting, code suggestions, debugging guidance, documentation, and editing.
 
-The final disclosure should remain synchronized with the actual tools used.
+The human author remains responsible for the final architecture, implementation decisions, scientific claims, citations, disclosures, and submitted materials. Research claims in this README are checked against primary sources.
 
-14. Credits
+No claim should be interpreted as saying that an AI system independently authored or validated the research.
 
-Project: Latent Reasoning — DataForge 2026
-Author: Anjani Singh
+## 14. Evidence levels
 
-Research sources are listed above. Third-party software and licenses will be documented in SOURCES_AND_LICENSES.md.
+Published evidence: statements attributed to the cited primary papers.
 
-15. Submission checklist
+Artifact behavior: behavior of the synthetic recurrent toy in this repository.
 
-Public artifact opens without sign-in
+Conceptual mapping: comparison between the toy and research architectures.
 
-Public source repository is accessible
+Author judgment: interpretations explicitly labeled as such.
 
-Blog PDF included
+Keeping these categories separate is intentional.
 
-README complete
+## 15. Conclusion
 
-Local setup works from a clean clone
+This artifact demonstrates recurrent latent reasoning as an educational concept:
+computation can be extended through repeated updates to an internal state rather
+than requiring every intermediate step to be expressed as a generated token.
 
-At least three recent primary papers cited
+The interactive system is intentionally a teaching-scale synthetic model. It is
+not a reproduction of BDH or BDH-CQ. The research connections described above
+are grounded in the cited primary papers, while the behavior of the toy model
+is clearly separated from published results.
 
-Technical claims have citations beside them
+## 16. License and provenance
 
-BDH/BDH-CQ connection is technically substantive
+This project is released under the MIT License. See LICENSE.
 
-Live/precomputed/synthetic/animated components are labeled
+Research papers and external resources remain under their respective copyrights
+and licenses. See SOURCES_AND_LICENSES.md for the
+project's source, asset, dependency, and license record.
 
-Source/license record exists
-
-AI assistance disclosure exists
-
-Code/data/assets/licenses are disclosed
-
-Limitations are explicit
-
-16. Final takeaway
-
-The artifact teaches one mechanism:
-
-Recurrence lets a model reuse computation over an evolving latent state, creating an inference-time depth axis that does not have to be expressed as a sequence of natural-language reasoning tokens.
-
-The project deliberately uses a small, inspectable computation so that learners can manipulate recurrence directly and then connect that mechanism to current research without confusing the educational model with a frontier system.
+The accompanying DataForge blog is available at
+docs/DataForge_Blog.pdf.
 
 
