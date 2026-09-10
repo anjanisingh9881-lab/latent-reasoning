@@ -345,13 +345,14 @@ is clearly separated from published results.
 
 ## 16. License and provenance
 
-This project is released under the MIT License. See LICENSE.
+This project is released under the MIT License. See [LICENSE](./LICENSE).
 
-Research papers and external resources remain under their respective copyrights
-and licenses. See SOURCES_AND_LICENSES.md for the
-project's source, asset, dependency, and license record.
+Research papers and external resources remain under their respective
+copyrights and licenses. See
+[SOURCES_AND_LICENSES.md](./SOURCES_AND_LICENSES.md) for the project's
+source, asset, dependency, and license record.
 
 The accompanying DataForge blog is available at
-docs/DataForge_Blog.pdf.
+[DataForge Blog PDF](./docs/DataForge_Blog.pdf).
 
 
